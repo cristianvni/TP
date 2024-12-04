@@ -4,44 +4,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
 
 const ViajeTable = () => {
-    const [viajes, setViajes] = useState([
-        {
-            idViaje: 1,
-            aerolinea: 'Aerolínea 1',
-            paisInicio: 'España',
-            paisDestino: 'Francia',
-            duracion: '2 horas',
-            costo: '$150',
-            date: '2023-10-01',
-        },
-        {
-            idViaje: 2,
-            aerolinea: 'Aerolínea 2',
-            paisInicio: 'México',
-            paisDestino: 'Estados Unidos',
-            duracion: '4 horas',
-            costo: '$300',
-            date: '2023-10-05',
-        },
-        {
-            idViaje: 3,
-            aerolinea: 'Aerolínea 3',
-            paisInicio: 'Argentina',
-            paisDestino: 'Brasil',
-            duracion: '3 horas',
-            costo: '$200',
-            date: '2023-10-10',
-        },
-        {
-            idViaje: 4,
-            aerolinea: 'Aerolínea 4',
-            paisInicio: 'Colombia',
-            paisDestino: 'Perú',
-            duracion: '2 horas',
-            costo: '$180',
-            date: '2023-10-15',
-        },
-    ]);
+    const [viajes, setViajes] = useState([]);
 
     const navigate = useNavigate(); // Hook para la navegación
 
@@ -55,6 +18,21 @@ const ViajeTable = () => {
     const handleEdit = (viaje) => {
         navigate(`/viaje/editar`, { state: { viaje } }); // Navegar a la página de edición con el estado
     };
+
+
+    useEffect(() => {
+        const fetchViajes = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/viajes');
+                const data = await response.json();
+                setViajes(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+        fetchViajes();
+    }, []);
+
 
     return (
         <Container>

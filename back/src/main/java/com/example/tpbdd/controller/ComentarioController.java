@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/comentarios")
@@ -36,8 +37,11 @@ public class ComentarioController {
     }
 
     // Agregar un nuevo comentario
-    @PostMapping
-    public ResponseEntity<Comentario> agregarComentario( @RequestBody Comentario comentario) {
+    @PostMapping()
+    public ResponseEntity<Comentario> crearComentario(@RequestBody Comentario comentario) {
+        Random random = new Random();
+        Long randomId = (long) random.nextInt(1_000_000); // Número aleatorio entre 0 y 999,999
+        comentario.setId(randomId);
         Comentario nuevoComentario = comentarioService.saveComentario(comentario);
         return new ResponseEntity<>(nuevoComentario, HttpStatus.CREATED);
     }

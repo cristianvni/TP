@@ -1,6 +1,8 @@
 package com.example.tpbdd.model;
 
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Comentario {
 
     @Id
+
     private long id;
     private String aerolinea;
     private String comentario;
@@ -18,7 +21,7 @@ public class Comentario {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
