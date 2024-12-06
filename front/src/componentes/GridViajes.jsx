@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +11,24 @@ const ViajeTable = () => {
     const handleDelete = (id) => {
         const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este viaje?');
         if (confirmDelete) {
-            setViajes(viajes.filter(viaje => viaje.idViaje !== id)); // Actualiza el estado eliminando el viaje
+            // Enviar DELETE request a localhost/api/viajes/id
+            fetch(`http://localhost:8080/api/viajes/${id}`, {
+                method: 'DELETE',
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Error al eliminar el viaje');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    // Actualiza el estado eliminando el viaje
+                    setViajes(viajes.filter(viaje => viaje.idViaje !== id));
+                    console.log('Viaje eliminado con éxito');
+                })
+                .catch((error) => {
+                    console.error('Error al eliminar el viaje:', error);
+                });
         }
     };
 
@@ -31,9 +48,7 @@ const ViajeTable = () => {
             }
         };
         fetchViajes();
-    }, []);
-
-
+    }, [viajes]);
     return (
         <Container>
             <Link to="/viaje/agregar">
@@ -55,19 +70,19 @@ const ViajeTable = () => {
                     </thead>
                     <tbody>
                     {viajes.map((viaje) => (
-                        <tr key={viaje.idViaje}>
-                            <td>{viaje.idViaje}</td>
+                        <tr key={viaje.id}>
+                            <td>{viaje.id}</td>
                             <td>{viaje.aerolinea}</td>
-                            <td>{viaje.paisInicio}</td>
-                            <td>{viaje.paisDestino}</td>
+                            <td>{viaje.origen}</td>
+                            <td>{viaje.destino}</td>
                             <td>{viaje.duracion}</td>
                             <td>{viaje.costo}</td>
-                            <td>{viaje.date}</td>
+                            <td>{viaje.fecha}</td>
                             <td>
                                 <Button variant="primary" onClick={() => handleEdit(viaje)} className="me-2">
                                     <FaEdit /> Editar
                                 </Button>
-                                <Button variant="danger" onClick={() => handleDelete(viaje.idViaje)}>
+                                <Button variant="danger" onClick={() => handleDelete(viaje.id)}>
                                     <FaTrash /> Eliminar
                                 </Button>
                             </td>

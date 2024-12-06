@@ -17,16 +17,26 @@ const AgregarViaje = () => {
         const nuevoViaje = {
             idViaje: Date.now(), // Generamos un ID único (puedes usar un sistema de ID más robusto)
             aerolinea,
-            paisInicio,
-            paisDestino,
+            origen: paisInicio,
+            destino: paisDestino,
             duracion,
             costo,
-            date,
+            fecha: date,
         };
 
         console.log('Nuevo viaje agregado:', nuevoViaje);
 
-        // Aquí puedes agregar la lógica para guardar el nuevo viaje en tu estado global o base de datos
+        // Enviar POST request a localhost/api/viajes
+        fetch('http://localhost:8080/api/viajes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(nuevoViaje),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log('Respuesta del servidor:', data))
+            .catch((error) => console.error('Error al enviar solicitud:', error));
 
         // Redirigir a la tabla de viajes después de agregar
         navigate('/'); // Cambiar history.push por navigate

@@ -8,7 +8,7 @@ const EditarComentario = () => {
     const comentario = location.state?.comentario; // Accede al objeto comentario de forma segura
 
     const [aerolinea, setAerolinea] = useState('');
-    const [comentarioAux, setComentarioAux] = useState('');
+    const [comentarioDescripcion, setComentarioDescripcion] = useState('');
     const navigate = useNavigate(); // Hook para la navegación
 
 
@@ -17,20 +17,36 @@ const EditarComentario = () => {
         console.log('Comentario actual:', comentario);
         if (comentario) {
             setAerolinea(comentario.aerolinea || ''); // Asegúrate de que no sea undefined
-            setComentarioAux(comentario.comentario || ''); // Asegúrate de que no sea undefined
+            setComentarioDescripcion(comentario.comentario || ''); // Asegúrate de que no sea undefined
         }
     }, [comentario]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (aerolinea && comentario) {
-            // Aquí puedes agregar la lógica para actualizar el comentario en tu base de datos o API
-            console.log('Comentario actualizado:', { aerolinea, comentario });
-            // Limpiar los campos del formulario
-            setAerolinea('');
-            setComentarioAux('');
-            // Redirigir a la ruta principal o a donde desees
-            navigate('/'); // Cambia '/' a la ruta que desees
+        const comentarioActualizado = {
+            aerolinea,
+            comentario: comentarioDescripcion
+        };
+        try {
+            fetch(`http://localhost:8080/api/comentarios/${comentario.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comentarioActualizado),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        const comentarioActualizado = response.json();
+                        console.log('Comentario actualizado:', comentarioActualizado);
+                        navigate('/'); // Redirigir después de actualizar
+                    } else {
+                        console.error('Error al actualizar el comentario:', response.statusText);
+                    }
+                });
+        }
+        catch (error) {
+            console.error('Error en la actualización del comentario:', error);
         }
     };
 
@@ -54,8 +70,8 @@ const EditarComentario = () => {
                         as="textarea"
                         rows={3}
                         placeholder="Ingrese su comentario"
-                        value={comentarioAux}
-                        onChange={(e) => setComentarioAux(e.target.value)}
+                        value={comentarioDescripcion}
+                        onChange={(e) => setComentarioDescripcion(e.target.value)}
                         required
                     />
                 </Form.Group>

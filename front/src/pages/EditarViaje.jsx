@@ -9,40 +9,58 @@ const EditarViaje = () => {
 
     // Inicializa los estados con cadenas vacías
     const [aerolinea, setAerolinea] = useState('');
-    const [paisInicio, setPaisInicio] = useState('');
-    const [paisDestino, setPaisDestino] = useState('');
+    const [origen, setInicio] = useState('');
+    const [destino, setDestino] = useState('');
     const [duracion, setDuracion] = useState('');
     const [costo, setCosto] = useState('');
-    const [date, setDate] = useState('');
+    const [fecha, setFecha] = useState('');
 
     useEffect(() => {
         if (viaje) {
             setAerolinea(viaje.aerolinea || ''); // Asegúrate de que no sea undefined
-            setPaisInicio(viaje.paisInicio || '');
-            setPaisDestino(viaje.paisDestino || '');
+            setInicio(viaje.origen || '');
+            setDestino(viaje.destino || '');
             setDuracion(viaje.duracion || '');
             setCosto(viaje.costo || '');
-            setDate(viaje.date || '');
+            setFecha(viaje.fecha || '');
         } else {
             // Manejo de error: el viaje no está definido
             console.error('No se encontró el viaje en el estado.');
         }
     }, [viaje]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         const viajeActualizado = {
             idViaje: viaje.idViaje,
             aerolinea,
-            paisInicio,
-            paisDestino,
+            origen,
+            destino,
             duracion,
             costo,
-            date,
+            fecha,
         };
 
-        console.log('Viaje actualizado:', viajeActualizado);
-        navigate('/viajes'); // Redirigir después de actualizar
+        try {
+            const response = await fetch(`http://localhost:8080/api/viajes/${viaje.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(viajeActualizado),
+            });
+
+            if (response.ok) {
+
+
+                navigate('/'); // Redirigir después de actualizar
+            } else {
+                console.error('Error al actualizar el viaje:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error en la petición:', error);
+        }
     };
 
     // Si no hay viaje, muestra un mensaje de error
@@ -69,8 +87,8 @@ const EditarViaje = () => {
                     <Form.Control
                         type="text"
                         placeholder="Ingrese el país de inicio"
-                        value={paisInicio}
-                        onChange={(e) => setPaisInicio(e.target.value)}
+                        value={origen}
+                        onChange={(e) => setInicio(e.target.value)}
                         required
                     />
                 </Form.Group>
@@ -79,8 +97,8 @@ const EditarViaje = () => {
                     <Form.Control
                         type="text"
                         placeholder="Ingrese el país de destino"
-                        value={paisDestino}
-                        onChange={(e) => setPaisDestino(e.target.value)}
+                        value={destino}
+                        onChange={(e) => setDestino(e.target.value)}
                         required
                     />
                 </Form.Group>
@@ -108,8 +126,8 @@ const EditarViaje = () => {
                     <Form.Label>Fecha</Form.Label>
                     <Form.Control
                         type ="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                        value={fecha}
+                        onChange={(e) => setFecha(e.target.value)}
                         required
                     />
                 </Form.Group>

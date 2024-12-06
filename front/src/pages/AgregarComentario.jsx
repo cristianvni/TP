@@ -9,15 +9,25 @@ const AgregarComentario = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (aerolinea && comentario) {
-            // Aquí puedes agregar la lógica para guardar el comentario en tu base de datos o API
-            console.log('Comentario agregado:', { aerolinea, comentario });
-            // Limpiar los campos del formulario
-            setAerolinea('');
-            setComentario('');
-            // Redirigir a la ruta principal
-            navigate('/'); // Cambia '/' a la ruta que desees
-        }
+        const nuevoComentario = {
+            aerolinea,
+            comentario
+        };
+
+        // Enviar POST request a localhost/api/viajes
+        fetch('http://localhost:8080/api/comentarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(nuevoComentario),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log('Respuesta del servidor:', data))
+            .catch((error) => console.error('Error al enviar solicitud:', error));
+
+        // Redirigir a la tabla de viajes después de agregar
+        navigate('/'); // Cambiar history.push por navigate
     };
 
     return (
