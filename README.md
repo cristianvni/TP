@@ -44,7 +44,11 @@ Ejecuta el siguiente comando para instalar las dependencias necesarias:
 npm install
 ```
 Ejecutar el Frontend:
-Ejecuta el siguiente comando para iniciar la aplicación:
+Ejecuta los siguientes comandos para iniciar la aplicación:
+
+```bash
+npm run build
+```
 
 ```bash
 npm run dev
